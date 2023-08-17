@@ -10,7 +10,8 @@ local AimbotSection = Aimbot:NewSection("Aimbot Section")
 local AimbotTogglesSection = Aimbot:NewSection("Aimbot Toggles")
 local FOVTogglesSection = Aimbot:NewSection("FOV Toggles")
 local character = Window:NewTab("Character")
-local movementSection = character:NewSection("Movement Section")
+local movemenSection = character:NewSection("Movement Section")
+local dumbshittSection = character:NewSection("Dumb Shit")
 
 ESPSection:NewButton("ESP", "Shows enemy player chams, heath, name and distance from you.", function()
     local player = game.Players.LocalPlayer
@@ -326,3 +327,7 @@ end)
 ChatSpamTogglesSection:NewTextBox("Spammed Message", "This Is the Message Spammed", function(txt)
 	message = txt
 end)
+
+movementSection:NewButton("Inf Yeild", "In Case You Might Need It.", function()
+	loadstring(game:HttpGet(('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'),true))()
+	end)
