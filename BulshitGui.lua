@@ -263,12 +263,16 @@ FOVTogglesSection:NewColorPicker("FOV Color", "Changes The FOV Color", Color3.fr
     _G.CircleColor = color
 end)
 
-movementSection:NewSlider("Walk Speed Slider", "Speed", 500, 0, function(s) -- 500 (MaxValue) | 0 (MinValue)
+movementSection:NewSlider("Walk Speed Slider", "Speed", 500, 0, function(s)
     game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = s
 end)
 
-movementSection:NewSlider("Jump power Slider", "Jump", 500, 0, function(s) -- 500 (MaxValue) | 0 (MinValue)
+movementSection:NewSlider("Jump power Slider", "Jump", 500, 0, function(s)
     game.Players.LocalPlayer.Character.Humanoid.JumpPower = s
+end)
+
+movementSection:NewButton("Inf Yeild", "In Case You Might Need It.", function()
+    loadstring(game:HttpGet(('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'),true))()
 end)
 
 ChatSpamSection:NewButton("Add Chat Spam", "Spamms A Message In Chat", function()
@@ -327,7 +331,3 @@ end)
 ChatSpamTogglesSection:NewTextBox("Spammed Message", "This Is the Message Spammed", function(txt)
 	message = txt
 end)
-
-movementSection:NewButton("Inf Yeild", "In Case You Might Need It.", function()
-	loadstring(game:HttpGet(('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'),true))()
-	end)
