@@ -1,5 +1,5 @@
 -- Bullshit GUI --
-local Library = local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/PhantomLord157/BullShitUI/main/UILibrary.lua"))()
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/PhantomLord157/BullShitUI/main/UILibrary.lua"))()
 local Window = Library.CreateLib("BullShit", "DarkTheme")
 
 -- Main --
@@ -10,8 +10,8 @@ local AimbotSection = Aimbot:NewSection("Aimbot Section")
 local AimbotTogglesSection = Aimbot:NewSection("Aimbot Toggles")
 local FOVTogglesSection = Aimbot:NewSection("FOV Toggles")
 local character = Window:NewTab("Character")
-local movemenSection = character:NewSection("Movement Section")
-local dumbshittSection = character:NewSection("Dumb Shit")
+local movementSection = character:NewSection("Movement Section")
+
 
 ESPSection:NewButton("ESP", "Shows enemy player chams, heath, name and distance from you.", function()
     local player = game.Players.LocalPlayer
@@ -263,71 +263,10 @@ FOVTogglesSection:NewColorPicker("FOV Color", "Changes The FOV Color", Color3.fr
     _G.CircleColor = color
 end)
 
-movementSection:NewSlider("Walk Speed Slider", "Speed", 500, 0, function(s)
+movementSection:NewSlider("Walk Speed Slider", "Speed", 500, 0, function(s) -- 500 (MaxValue) | 0 (MinValue)
     game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = s
 end)
 
-movementSection:NewSlider("Jump power Slider", "Jump", 500, 0, function(s)
+movementSection:NewSlider("Jump power Slider", "Jump", 500, 0, function(s) -- 500 (MaxValue) | 0 (MinValue)
     game.Players.LocalPlayer.Character.Humanoid.JumpPower = s
-end)
-
-movementSection:NewButton("Inf Yeild", "In Case You Might Need It.", function()
-    loadstring(game:HttpGet(('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'),true))()
-end)
-
-ChatSpamSection:NewButton("Add Chat Spam", "Spamms A Message In Chat", function()
-    -- Define default settings
-local defaultSettings = {
-    AutoChat_Time = 1,
-    AutoChat_Delay = 1,
-    AutoChat = true,
- }
- 
- -- User-defined settings (customize these)
- local userSettings = {
-    AutoChat_Time = 1,     -- Time interval between messages
-    AutoChat_Delay = 1,    -- Delay before starting AutoChat loop
-    AutoChat = true,       -- Enable/disable AutoChat
-    Message = "PUT YOUR MESSAGE HERE",
- }
- 
- -- Merge userSettings with defaultSettings
- local settings = {}
- for key, value in pairs(defaultSettings) do
-    if userSettings[key] ~= nil then
-       settings[key] = userSettings[key]
-    else
-       settings[key] = value
-    end
- end
- 
- -- Reference to the chat remote
- local chatrem = game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest
- 
- -- Wait for the specified delay before starting AutoChat loop
- task.wait(settings.AutoChat_Delay)
- 
- -- AutoChat loop
- while settings.AutoChat do
-     chatrem:FireServer(settings.Message, "All")
-     print("Sent Message")
-     task.wait(settings.AutoChat_Time)
- end
- 
-end)
-
-ChatSpamTogglesSection:NewToggle("Enable ChatSpam", "Enables Chat Spam", function(state)
-    if state then
-        AutoChat = state
-    else
-        AutoChat = state
-    end
-end)
-
-ChatSpamTogglesSection:NewSlider("Wait Time", "Changes The Time Between Messages", 10, 0, function(s)
-    AutoChat_Time = s
-end)
-
-ChatSpamTogglesSection:NewTextBox("Spammed Message", "This Is the Message Spammed", function(txt)
-	message = txt
 end)
