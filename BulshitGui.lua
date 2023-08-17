@@ -12,8 +12,8 @@ local FOVTogglesSection = Aimbot:NewSection("FOV Toggles")
 local character = Window:NewTab("Character")
 local movementSection = character:NewSection("Movement Section")
 local RandomShit = Window:NewTab("Random Shit")
-local ChatSpam = RandomShit:NewSection("Chat Spam")
-local ChatSpamToggles = RandomShit:NewSection("Chat Spam Toggles")
+local chatspam = RandomShit:NewSection("Chat Spam")
+local chatspamtoggles = RandomShit:NewSection("Chat Spam Toggles")
 
 ESPSection:NewButton("ESP", "Shows enemy player chams, heath, name and distance from you.", function()
     local player = game.Players.LocalPlayer
