@@ -1,4 +1,3 @@
-print("nig")
 -- Bullshit GUI --
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/PhantomLord157/BullShitUI/main/UILibrary.lua"))()
 local Window = Library.CreateLib("BullShit", "DarkTheme")
