@@ -1,4 +1,3 @@
-print("niggers")
 -- Bullshit GUI --
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/PhantomLord157/BullShitUI/main/UILibrary.lua"))()
 local Window = Library.CreateLib("BullShit", "DarkTheme")
@@ -260,7 +259,7 @@ FOVTogglesSection:NewToggle("FOV Visible", "Great Now You Dont Know Where You Go
     end
 end)
 
-FOVTogglesSection:NewColorPicker("FOV Color", "Changes The FOV Color", Color3.fromRGB(0, 0, 0), function(color)
+FOVTogglesSection:NewColorPicker("FOV", "Changes The FOV Color", Color3.fromRGB(0, 0, 0), function(color)
     _G.CircleColor = color
 end)
 
