@@ -1,15 +1,10 @@
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
-local Window = Library.CreateLib("卐 Operation Nexus 卍", "DarkTheme")
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/PhantomLord157/ProjectBullShit/main/UILibrary.lua"))()
+local Window = Library.CreateLib("卐 Operation Nexus V 1.2  卍", "DarkTheme")
 
 -- Main --
 local ESP = Window:NewTab("ESP")
 local ESPSection = ESP:NewSection("ESP")
-local Aimbot = Window:NewTab("Aimbot")
-local AimbotSection = Aimbot:NewSection("Aimbot")
-local AimbotTogglesSection = Aimbot:NewSection("Aimbot Toggles")
-local FOVTogglesSection = Aimbot:NewSection("FOV Toggles")
-local character = Window:NewTab("Character")
-local movementSection = character:NewSection("Movement")
+
 
 ESPSection:NewButton("ESP", "Shows enemy player chams, health, name, and distance from you.", function()
     local player = game.Players.LocalPlayer
@@ -109,6 +104,17 @@ ESPSection:NewButton("ESP", "Shows enemy player chams, health, name, and distanc
         updatePlayerLabels()
     end)
 end)
+
+ESPSection:NewButton("FullBright", "Night time is supposed to be dark?", function()
+    local Lighting = game:GetService("Lighting")
+    Lighting.Ambient = Color3.new(1, 1, 1)
+    Lighting.OutdoorAmbient = Color3.new(1, 1, 1)
+end)
+
+local Aimbot = Window:NewTab("Aimbot")
+local AimbotSection = Aimbot:NewSection("Aimbot")
+local AimbotTogglesSection = Aimbot:NewSection("Aimbot Toggles")
+local FOVTogglesSection = Aimbot:NewSection("FOV Toggles")
 
 AimbotSection:NewButton("Add Aimbot", "Click This For Aimbot To Work", function()
     -- BullShit Aimbot --
@@ -246,6 +252,9 @@ FOVTogglesSection:NewColorPicker("FOV Color", "Changes The FOV Color", Color3.fr
     _G.CircleColor = color
 end)
 
+local character = Window:NewTab("Character")
+local movementSection = character:NewSection("Movement")
+
 movementSection:NewSlider("Walk Speed Slider", "Speed", 500, 0, function(s)
     game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = s
 end)
@@ -254,49 +263,55 @@ movementSection:NewSlider("Jump power Slider", "Jump", 500, 0, function(s)
     game.Players.LocalPlayer.Character.Humanoid.JumpPower = s
 end)
 
-movementSection:NewButton("Inf Yield", "In Case You Need It.", function()
-    while true do
-        loadstring(game:HttpGet(('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'),true))()
-    end
+local Other = Window:NewTab("Other Scripts")
+local OthersSection = Other:NewSection("Scripts")
+
+OthersSection:NewButton("Inf Yield", "In Case You Need It.", function()
+        loadstring(game:HttpGet(("https://raw.githubusercontent.com/PhantomLord157/ProjectBullShit/main/Inf%20Yeild"),true))()
 end)
 
-movementSection:NewButton("FullBright", "Night time is supposed to be dark?", function()
-    local Lighting = game:GetService("Lighting")
-    Lighting.Ambient = Color3.new(1, 1, 1)
-    Lighting.OutdoorAmbient = Color3.new(1, 1, 1)
+OthersSection:NewButton("Dark Dex", "In Case You Need It.", function()
+        loadstring(game:HttpGet(("https://raw.githubusercontent.com/PhantomLord157/ProjectBullShit/main/DarkDex"),true))()
 end)
 
-local player = game.Players.LocalPlayer
-local character = player.Character
-local humanoid = character:FindFirstChild("Humanoid")
-local spinSpeed = 0 -- Initialize spinSpeed here
+OthersSection:NewButton("Simply Spy", "In Case You Need It.", function()
+        loadstring(game:HttpGet(("https://raw.githubusercontent.com/PhantomLord157/ProjectBullShit/main/Remote%20Spy"),true))()
+end)
 
-if humanoid then
-    local isSpinning = false
+local Experimental = Window:NewTab("Experimental")
+local VisualsSection = Experimental:NewSection("Visuals")
 
-    local function spinCharacter()
-        isSpinning = true
-        while isSpinning do
-            local currentCFrame = character.PrimaryPart.CFrame
-            local newCFrame = currentCFrame * CFrame.Angles(0, math.rad(spinSpeed), 0)
-            character:SetPrimaryPartCFrame(newCFrame)
-            wait(0.03) -- You can adjust the delay between each frame update
-        end
+VisualsSection:NewButton("Show FPS", "Display Frames Per Second", function()
+    local playerGui = game.Players.LocalPlayer.PlayerGui
+
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(0, 100, 0, 30)
+    frame.Position = UDim2.new(0.5, -50, 0.5, -15)
+    frame.BackgroundTransparency = 0.5
+    frame.BackgroundColor3 = Color3.new(0, 0, 0)
+    frame.Parent = playerGui
+
+    local fpsLabel = Instance.new("TextLabel")
+    fpsLabel.Size = UDim2.new(1, 0, 1, 0)
+    fpsLabel.BackgroundTransparency = 1
+    fpsLabel.TextColor3 = Color3.new(1, 1, 1)
+    fpsLabel.Font = Enum.Font.SourceSansBold
+    fpsLabel.FontSize = Enum.FontSize.Size18
+    fpsLabel.Parent = frame
+
+    local function updateFPSLabel()
+        local fps = math.floor(1 / game:GetService("RunService").RenderStepped:Wait())
+        fpsLabel.Text = "FPS: " .. fps
     end
 
-    local function stopSpin()
-        isSpinning = false
-    end
+    local connection
+    connection = game:GetService("RunService").RenderStepped:Connect(function()
+        updateFPSLabel()
+    end)
 
-    movementSection:NewButton("Add Spin", "It's Spinning Time. :)", function()
-        if not isSpinning then
-            spinCharacter()
-        else
-            stopSpin()
+    fpsLabel:GetPropertyChangedSignal("Parent"):Connect(function()
+        if fpsLabel.Parent == nil then
+            connection:Disconnect()
         end
     end)
-
-    movementSection:NewSlider("Spin Speed", "SPIN FASTER!!!", 100, 0, function(s)
-        spinSpeed = s
-    end)
-end
+end)
