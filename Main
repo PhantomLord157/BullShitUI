@@ -13,32 +13,33 @@ local movementSection = character:NewSection("Movement")
 
 ESPSection:NewButton("ESP", "Shows enemy player chams, health, name, and distance from you.", function()
     local player = game.Players.LocalPlayer
-    local RunService = game:GetService("RunService")
+local RunService = game:GetService("RunService")
 
-    local highlight = Instance.new("Highlight")
-    highlight.Name = "Highlight"
+local highlight = Instance.new("Highlight")
+highlight.Name = "Highlight"
 
-    local function createHighlight(character)
-        if character and not character:FindFirstChild("HumanoidRootPart"):FindFirstChild("Highlight") then
-            local highlightClone = highlight:Clone()
-            highlightClone.Adornee = character
-            highlightClone.Parent = character:FindFirstChild("HumanoidRootPart")
-            highlightClone.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-            highlightClone.Name = "Highlight"
-        end
+local function createHighlight(character)
+    if character and not character:FindFirstChild("HumanoidRootPart"):FindFirstChild("Highlight") then
+        local highlightClone = highlight:Clone()
+        highlightClone.Adornee = character
+        highlightClone.Parent = character:FindFirstChild("HumanoidRootPart")
+        highlightClone.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+        highlightClone.Name = "Highlight"
     end
+end
 
-    local function updatePlayerLabels()
-        for _, otherPlayer in pairs(game.Players:GetPlayers()) do
-            if otherPlayer ~= player then
-                local character = otherPlayer.Character
-                local humanoid = character and character:FindFirstChild("Humanoid")
-                local head = character and character:FindFirstChild("Head")
+local function updatePlayerLabels()
+    for _, otherPlayer in pairs(game.Players:GetPlayers()) do
+        if otherPlayer ~= player then
+            local character = otherPlayer.Character
+            local humanoid = character and character:FindFirstChild("Humanoid")
+            local head = character and character:FindFirstChild("Head")
 
-                local nameLabel = head and head:FindFirstChild("PlayerLabel")
-                if humanoid and head and humanoid.Health > 0 then
-                    local distance = (head.Position - player.Character.Head.Position).Magnitude
+            local nameLabel = head and head:FindFirstChild("PlayerLabel")
+            if humanoid and head and humanoid.Health > 0 then
+                local distance = (head.Position - player.Character.Head.Position).Magnitude
 
+                if distance <= 1000 then
                     if not nameLabel then
                         nameLabel = Instance.new("BillboardGui")
                         nameLabel.Name = "PlayerLabel"
@@ -71,43 +72,44 @@ ESPSection:NewButton("ESP", "Shows enemy player chams, health, name, and distanc
                         nameLabel.Parent = head
                     end
 
-                    nameLabel.NameLabel.Text = otherPlayer.Name
-                    nameLabel.HealthLabel.Text = string.format("Distance: %.2f | Health: %d", distance, humanoid.Health)
-                    nameLabel.Adornee = head
+                    -- Update label text and position here
                 elseif nameLabel then
                     nameLabel:Destroy()
                 end
+            elseif nameLabel then
+                nameLabel:Destroy()
             end
         end
     end
+end
 
-    local function playerAdded(playerAdded)
-        repeat wait() until playerAdded.Character
-        createHighlight(playerAdded.Character)
-        updatePlayerLabels()
-    end
+local function playerAdded(playerAdded)
+    repeat wait() until playerAdded.Character
+    createHighlight(playerAdded.Character)
+    updatePlayerLabels()
+end
 
-    game.Players.PlayerAdded:Connect(playerAdded)
+game.Players.PlayerAdded:Connect(playerAdded)
 
-    game.Players.PlayerRemoving:Connect(function(playerRemoved)
-        local character = playerRemoved.Character
-        if character then
-            local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
-            if humanoidRootPart then
-                local nameLabel = humanoidRootPart:FindFirstChild("PlayerLabel")
-                if nameLabel then
-                    nameLabel:Destroy()
-                end
+game.Players.PlayerRemoving:Connect(function(playerRemoved)
+    local character = playerRemoved.Character
+    if character then
+        local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+        if humanoidRootPart then
+            local nameLabel = humanoidRootPart:FindFirstChild("PlayerLabel")
+            if nameLabel then
+                nameLabel:Destroy()
             end
         end
-    end)
+    end
+end)
 
-    RunService.Heartbeat:Connect(function()
-        for _, player in ipairs(game.Players:GetPlayers()) do
-            createHighlight(player.Character)
-        end
-        updatePlayerLabels()
-    end)
+RunService.Heartbeat:Connect(function()
+    for _, player in ipairs(game.Players:GetPlayers()) do
+        createHighlight(player.Character)
+    end
+    updatePlayerLabels()
+end)
 end)
 
 AimbotSection:NewButton("Add Aimbot", "Click This For Aimbot To Work", function()
