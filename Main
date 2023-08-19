@@ -1,5 +1,5 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/PhantomLord157/ProjectBullShit/main/UILibrary.lua"))()
-local Window = Library.CreateLib("卐 Operation Nexus V 1.2.3  卍", "DarkTheme")
+local Window = Library.CreateLib("卐 Operation Nexus V 1.2.3  卍", "Synapse")
 
 -- Main --
 local ESP = Window:NewTab("ESP")
