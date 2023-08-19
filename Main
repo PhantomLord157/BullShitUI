@@ -256,8 +256,7 @@ end)
 
 movementSection:NewButton("Inf Yield", "In Case You Need It.", function()
     while true do
-        wait(1)
-        task.yield()
+        loadstring(game:HttpGet(('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'),true))()
     end
 end)
 
