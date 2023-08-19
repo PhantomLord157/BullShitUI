@@ -3,13 +3,13 @@ local Window = Library.CreateLib("卐 BullShit 卍", "DarkTheme")
 
 -- Main --
 local ESP = Window:NewTab("ESP")
-local ESPSection = ESP:NewSection("ESP Section")
+local ESPSection = ESP:NewSection("ESP")
 local Aimbot = Window:NewTab("Aimbot")
-local AimbotSection = Aimbot:NewSection("Aimbot Section")
+local AimbotSection = Aimbot:NewSection("Aimbot")
 local AimbotTogglesSection = Aimbot:NewSection("Aimbot Toggles")
 local FOVTogglesSection = Aimbot:NewSection("FOV Toggles")
 local character = Window:NewTab("Character")
-local movementSection = character:NewSection("Movement Section")
+local movementSection = character:NewSection("Movement")
 
 ESPSection:NewButton("ESP", "Shows enemy player chams, health, name, and distance from you.", function()
     local player = game.Players.LocalPlayer
