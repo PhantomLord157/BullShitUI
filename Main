@@ -12,7 +12,7 @@ local character = Window:NewTab("Character")
 local movementSection = character:NewSection("Movement")
 
 ESPSection:NewButton("ESP", "Shows enemy player chams, health, name, and distance from you.", function()
-    local player = game.Players.LocalPlayer
+   local player = game.Players.LocalPlayer
 local RunService = game:GetService("RunService")
 
 local highlight = Instance.new("Highlight")
@@ -39,43 +39,41 @@ local function updatePlayerLabels()
             if humanoid and head and humanoid.Health > 0 then
                 local distance = (head.Position - player.Character.Head.Position).Magnitude
 
-                if distance <= 1000 then
-                    if not nameLabel then
-                        nameLabel = Instance.new("BillboardGui")
-                        nameLabel.Name = "PlayerLabel"
-                        nameLabel.AlwaysOnTop = true
-                        nameLabel.ExtentsOffset = Vector3.new(0, 2, 0)
-                        nameLabel.Size = UDim2.new(0, 100, 0, 30)
+                if not nameLabel then
+                    nameLabel = Instance.new("BillboardGui")
+                    nameLabel.Name = "PlayerLabel"
+                    nameLabel.AlwaysOnTop = true
+                    nameLabel.ExtentsOffset = Vector3.new(0, 2, 0)
+                    nameLabel.Size = UDim2.new(0, 100, 0, 30)
 
-                        local nameLabelText = Instance.new("TextLabel")
-                        nameLabelText.Name = "NameLabel"
-                        nameLabelText.BackgroundTransparency = 1
-                        nameLabelText.Position = UDim2.new(0, 0, 0, 0)
-                        nameLabelText.Size = UDim2.new(1, 0, 0.5, 0)
-                        nameLabelText.Text = ""
-                        nameLabelText.TextColor3 = Color3.new(1, 1, 1)
-                        nameLabelText.Font = Enum.Font.SourceSansBold
-                        nameLabelText.TextSize = 18
-                        nameLabelText.Parent = nameLabel
+                    local nameLabelText = Instance.new("TextLabel")
+                    nameLabelText.Name = "NameLabel"
+                    nameLabelText.BackgroundTransparency = 1
+                    nameLabelText.Position = UDim2.new(0, 0, 0, 0)
+                    nameLabelText.Size = UDim2.new(1, 0, 0.5, 0)
+                    nameLabelText.Text = ""
+                    nameLabelText.TextColor3 = Color3.new(1, 1, 1)
+                    nameLabelText.Font = Enum.Font.SourceSansBold
+                    nameLabelText.TextSize = 18
+                    nameLabelText.Parent = nameLabel
 
-                        local healthLabel = Instance.new("TextLabel")
-                        healthLabel.Name = "HealthLabel"
-                        healthLabel.BackgroundTransparency = 1
-                        healthLabel.Position = UDim2.new(0, 0, 0.5, 0)
-                        healthLabel.Size = UDim2.new(1, 0, 0.5, 0)
-                        healthLabel.Text = ""
-                        healthLabel.TextColor3 = Color3.new(1, 1, 1)
-                        healthLabel.Font = Enum.Font.SourceSansBold
-                        healthLabel.TextSize = 18
-                        healthLabel.Parent = nameLabel
+                    local healthLabel = Instance.new("TextLabel")
+                    healthLabel.Name = "HealthLabel"
+                    healthLabel.BackgroundTransparency = 1
+                    healthLabel.Position = UDim2.new(0, 0, 0.5, 0)
+                    healthLabel.Size = UDim2.new(1, 0, 0.5, 0)
+                    healthLabel.Text = ""
+                    healthLabel.TextColor3 = Color3.new(1, 1, 1)
+                    healthLabel.Font = Enum.Font.SourceSansBold
+                    healthLabel.TextSize = 18
+                    healthLabel.Parent = nameLabel
 
-                        nameLabel.Parent = head
-                    end
-
-                    -- Update label text and position here
-                elseif nameLabel then
-                    nameLabel:Destroy()
+                    nameLabel.Parent = head
                 end
+
+                nameLabel.NameLabel.Text = otherPlayer.Name
+                nameLabel.HealthLabel.Text = string.format("Distance: %.2f | Health: %d", distance, humanoid.Health)
+                nameLabel.Adornee = head
             elseif nameLabel then
                 nameLabel:Destroy()
             end
@@ -104,12 +102,13 @@ game.Players.PlayerRemoving:Connect(function(playerRemoved)
     end
 end)
 
-RunService.Heartbeat:Connect(function()
+while true do
+    wait(0.5)  -- Wait for 0.5 seconds
     for _, player in ipairs(game.Players:GetPlayers()) do
         createHighlight(player.Character)
     end
     updatePlayerLabels()
-end)
+end
 end)
 
 AimbotSection:NewButton("Add Aimbot", "Click This For Aimbot To Work", function()
