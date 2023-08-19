@@ -1,5 +1,5 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/PhantomLord157/ProjectBullShit/main/UILibrary.lua"))()
-local Window = Library.CreateLib("卐 Operation Nexus V 1.2  卍", "DarkTheme")
+local Window = Library.CreateLib("卐 Operation Nexus V 1.2.1  卍", "DarkTheme")
 
 -- Main --
 local ESP = Window:NewTab("ESP")
@@ -125,13 +125,13 @@ AimbotSection:NewButton("Add Aimbot", "Click This For Aimbot To Work", function(
     local UserInputService = game:GetService("UserInputService")
     local TweenService = game:GetService("TweenService")
     local Holding = false
-
+    
     -- aimbot settings --
     _G.AimbotEnabled = true
     _G.TeamCheck = false
     _G.Aimpart = "Head"
     _G.Sensitivity = 0.1 -- the lower the number the faster the lock --
-
+    
     -- Fov settings --
     _G.CircleSides = 64
     _G.CircleColor = Color3.fromRGB(255, 255, 255)
@@ -140,7 +140,7 @@ AimbotSection:NewButton("Add Aimbot", "Click This For Aimbot To Work", function(
     _G.CircleFilled = false
     _G.CircleVisible = true
     _G.CircleThickness = 0
-
+    
     local FOVCircle = Drawing.new("Circle")
     FOVCircle.Position = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
     FOVCircle.Radius = _G.CircleRadius
@@ -149,7 +149,7 @@ AimbotSection:NewButton("Add Aimbot", "Click This For Aimbot To Work", function(
     FOVCircle.Transparency = _G.CircleTransparency
     FOVCircle.NumSides = _G.CircleSides
     FOVCircle.Thickness = _G.CircleThickness
-
+    
     local function IsInFrontOfCamera(part)
         local cameraCFrame = Camera.CFrame
         local partPosition = part.Position
@@ -158,14 +158,33 @@ AimbotSection:NewButton("Add Aimbot", "Click This For Aimbot To Work", function(
         local dotProduct = cameraLookVector:Dot(directionToPart)
         return dotProduct > 0
     end
-
+    
+    local function IsPlayerVisible(targetCharacter)
+        local rayParams = RaycastParams.new()
+        rayParams.FilterType = Enum.RaycastFilterType.Blacklist
+        rayParams.FilterDescendantsInstances = {LocalPlayer.Character}
+    
+        local targetPosition = targetCharacter.HumanoidRootPart.Position
+        local direction = (targetPosition - Camera.CFrame.Position).Unit
+    
+        local result = workspace:Raycast(Camera.CFrame.Position, direction * 1000, rayParams)
+        if result then
+            local hitInstance = result.Instance
+            if hitInstance:IsDescendantOf(targetCharacter) then
+                return true -- No obstruction, target is visible
+            end
+        end
+    
+        return false -- Obstruction detected, target is not visible
+    end
+    
     local function GetClosestPlayerInFOV()
         local MaximumDistance = _G.CircleRadius
         local Target = nil
         local ClosestDistance = math.huge
-
+    
         local centerScreen = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
-
+    
         for _, v in next, Players:GetPlayers() do
             if v.Name ~= LocalPlayer.Name then
                 if not _G.TeamCheck or (v.Team ~= LocalPlayer.Team) then
@@ -173,7 +192,7 @@ AimbotSection:NewButton("Add Aimbot", "Click This For Aimbot To Work", function(
                     if character and character:FindFirstChild("HumanoidRootPart") and character:FindFirstChild("Humanoid") and character:FindFirstChild("Humanoid").Health > 0 then
                         local ScreenPoint = Camera:WorldToScreenPoint(character.HumanoidRootPart.Position)
                         local VectorDistance = (centerScreen - Vector2.new(ScreenPoint.X, ScreenPoint.Y)).Magnitude
-
+    
                         if VectorDistance < MaximumDistance and VectorDistance < ClosestDistance and IsInFrontOfCamera(character.HumanoidRootPart) then
                             ClosestDistance = VectorDistance
                             Target = v
@@ -182,22 +201,22 @@ AimbotSection:NewButton("Add Aimbot", "Click This For Aimbot To Work", function(
                 end
             end
         end
-
+    
         return Target
     end
-
+    
     UserInputService.InputBegan:Connect(function(Input)
         if Input.UserInputType == Enum.UserInputType.MouseButton2 then
             Holding = true
         end
     end)
-
+    
     UserInputService.InputEnded:Connect(function(Input)
         if Input.UserInputType == Enum.UserInputType.MouseButton2 then
             Holding = false
         end
     end)
-
+    
     RunService.RenderStepped:Connect(function()
         FOVCircle.Position = Vector2.new(UserInputService:GetMouseLocation().X, UserInputService:GetMouseLocation().Y)
         FOVCircle.Radius = _G.CircleRadius
@@ -206,14 +225,18 @@ AimbotSection:NewButton("Add Aimbot", "Click This For Aimbot To Work", function(
         FOVCircle.Transparency = _G.CircleTransparency
         FOVCircle.NumSides = _G.CircleSides
         FOVCircle.Thickness = _G.CircleThickness
-
+    
         if Holding and _G.AimbotEnabled then
             local closestPlayer = GetClosestPlayerInFOV()
             if closestPlayer then
-                TweenService:Create(Camera, TweenInfo.new(_G.Sensitivity, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {CFrame = CFrame.new(Camera.CFrame.Position, closestPlayer.Character[_G.Aimpart].Position)}):Play()
+                local targetCharacter = closestPlayer.Character
+                if targetCharacter and IsPlayerVisible(targetCharacter) then
+                    TweenService:Create(Camera, TweenInfo.new(_G.Sensitivity, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {CFrame = CFrame.new(Camera.CFrame.Position, targetCharacter[_G.Aimpart].Position)}):Play()
+                end
             end
         end
     end)
+    
 end)
 
 AimbotTogglesSection:NewToggle("Enable Aimbot", "Enables Aimbot", function(state)
