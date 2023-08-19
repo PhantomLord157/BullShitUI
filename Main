@@ -1,5 +1,5 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
-local Window = Library.CreateLib("卐 BullShit 卍", "DarkTheme")
+local Window = Library.CreateLib("卐 Operation Nexus 卍", "DarkTheme")
 
 -- Main --
 local ESP = Window:NewTab("ESP")
