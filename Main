@@ -8,8 +8,8 @@ local Aimbot = Window:NewTab("Aimbot")
 local AimbotSection = Aimbot:NewSection("Aimbot Section")
 local AimbotTogglesSection = Aimbot:NewSection("Aimbot Toggles")
 local FOVTogglesSection = Aimbot:NewSection("FOV Toggles")
-local character = Window:NewTab("Randomn Shit")
-local movementSection = character:NewSection("More Randmon Shit IDK")
+local character = Window:NewTab("Character")
+local movementSection = character:NewSection("Movement Section")
 
 ESPSection:NewButton("ESP", "Shows enemy player chams, health, name, and distance from you.", function()
     local player = game.Players.LocalPlayer
@@ -255,17 +255,9 @@ movementSection:NewSlider("Jump power Slider", "Jump", 500, 0, function(s)
 end)
 
 movementSection:NewButton("Inf Yield", "In Case You Need It.", function()
-      loadstring(game:HttpGet("https://raw.githubusercontent.com/PhantomLord157/ProjectBullShit/main/Inf%20Yeild"))()
-    end
-end)
-
-movementSection:NewButton("Simply Spy", "In Case You Need It.", function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/PhantomLord157/ProjectBullShit/main/Remote%20Spy"))()
-    end
-end)
-
-movementSection:NewButton("Dark Dex", "In Case You Need It.", function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/PhantomLord157/ProjectBullShit/main/DarkDex"))()
+    while true do
+        wait(1)
+        task.yield()
     end
 end)
 
