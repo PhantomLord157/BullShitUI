@@ -1,5 +1,5 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/PhantomLord157/ProjectBullShit/main/UILibrary.lua"))()
-local Window = Library.CreateLib("卐 Operation Nexus V 1.2.7  卍", "Synapse")
+local Window = Library.CreateLib("卐 Operation Nexus V 1.2.8  卍", "Synapse")
 
 -- Main --
 local ESP = Window:NewTab("ESP")
@@ -7,9 +7,6 @@ local ESPSection = ESP:NewSection("ESP")
 
 
 ESPSection:NewButton("ESP", "Shows enemy player chams, health, name, and distance from you.", function()
-local penut = true
-while penut == true do 
-  wait(20)
     --- ESP Script for Roblox game with team-based color highlights
 local player = game.Players.LocalPlayer
 local RunService = game:GetService("RunService")
@@ -34,6 +31,7 @@ local function updatePlayerLabels()
             local character = otherPlayer.Character
             local humanoid = character and character:FindFirstChild("Humanoid")
             local head = character and character:FindFirstChild("Head")
+            
 
             local highlightColor = otherPlayer.Team == player.Team and Color3.new(0, 1, 0) or Color3.new(1, 0, 0)
 
@@ -54,7 +52,7 @@ local function updatePlayerLabels()
                     nameLabelText.Position = UDim2.new(0, 0, 0, 0)
                     nameLabelText.Size = UDim2.new(1, 0, 0.5, 0)
                     nameLabelText.Text = ""
-                    nameLabelText.TextColor3 = highlightColor
+                    nameLabelText.TextColor3 = highlightColor -- Use the same highlight color for names
                     nameLabelText.Font = Enum.Font.SourceSansBold
                     nameLabelText.TextSize = 18
                     nameLabelText.Parent = nameLabel
@@ -102,26 +100,6 @@ game.Players.PlayerRemoving:Connect(function(playerRemoved)
                 highlight:Destroy()
             end
         end
-    end
-end)
-
-RunService.Heartbeat:Connect(function()
-    updatePlayerLabels()
-end)
-
-while true do
-    wait(19)
-    for _, otherPlayer in pairs(game.Players:GetPlayers()) do
-        local character = otherPlayer.Character
-        if character then
-            local nameLabel = character:FindFirstChild("HumanoidRootPart") and character.HumanoidRootPart:FindFirstChild("PlayerLabel")
-            if nameLabel then
-                nameLabel:Destroy()
-            end
-        end
-    end
-end
-
     end
 end)
 
