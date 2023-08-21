@@ -31,9 +31,6 @@ local function updatePlayerLabels()
             local character = otherPlayer.Character
             local humanoid = character and character:FindFirstChild("Humanoid")
             local head = character and character:FindFirstChild("Head")
-            
-
-            local highlightColor = otherPlayer.Team == player.Team and Color3.new(0, 1, 0) or Color3.new(1, 0, 0)
 
             local nameLabel = head and head:FindFirstChild("PlayerLabel")
             if humanoid and head and humanoid.Health > 0 then
