@@ -1,5 +1,5 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/PhantomLord157/ProjectBullShit/main/UILibrary.lua"))()
-local Window = Library.CreateLib("卐 Operation Nexus V 1.2.8  卍", "Synapse")
+local Window = Library.CreateLib("卐 Operation Nexus V 1.3  卍", "Synapse")
 
 -- Main --
 local ESP = Window:NewTab("ESP")
@@ -30,8 +30,7 @@ local function updatePlayerLabels()
         if otherPlayer ~= player then
             local character = otherPlayer.Character
             local humanoid = character and character:FindFirstChild("Humanoid")
-            local head = character and character:FindFirstChild("Head")
-
+            local head = character and character:FindFirstChild("Head")        
             local nameLabel = head and head:FindFirstChild("PlayerLabel")
             if humanoid and head and humanoid.Health > 0 then
                 local distance = (head.Position - player.Character.Head.Position).Magnitude
@@ -49,7 +48,7 @@ local function updatePlayerLabels()
                     nameLabelText.Position = UDim2.new(0, 0, 0, 0)
                     nameLabelText.Size = UDim2.new(1, 0, 0.5, 0)
                     nameLabelText.Text = ""
-                    nameLabelText.TextColor3 = highlightColor -- Use the same highlight color for names
+                    nameLabelText.TextColor3 = Color3.new(1, 1, 1)
                     nameLabelText.Font = Enum.Font.SourceSansBold
                     nameLabelText.TextSize = 18
                     nameLabelText.Parent = nameLabel
@@ -103,7 +102,6 @@ end)
 RunService.Heartbeat:Connect(function()
     updatePlayerLabels()
 end)
-end
 end)
 
 ESPSection:NewButton("FullBright", "Night time is supposed to be dark?", function()
@@ -344,4 +342,136 @@ end)
 
 local Experimental = Window:NewTab("Experimental")
 local VisualsSection = Experimental:NewSection("Visuals")
+local CrosshairSettings = Experimental:NewSection("Crosshair Settings")
+
+VisualsSection:NewButton("Add Crosshair", "Its A CrossHair", function ()
+    local function API_Check()
+        if Drawing == nil then
+            return "No"
+        else
+            return "Yes"
+        end
+    end
+    
+    local Find_Required = API_Check()
+    
+    if Find_Required == "No" then
+        game:GetService("StarterGui"):SetCore("SendNotification",{
+            Title = "Exunys Developer";
+            Text = "Crosshair script could not be loaded because your exploit is unsupported.";
+            Duration = math.huge;
+            Button1 = "OK"
+        })
+    
+        return
+    end
+    
+    local Players = game:GetService("Players")
+    local RunService = game:GetService("RunService")
+    local UserInputService = game:GetService("UserInputService")
+    local Camera = workspace.CurrentCamera
+    
+    local Typing = false
+    
+    local ViewportSize_ = Camera.ViewportSize / 2
+    local Axis_X, Axis_Y = ViewportSize_.X, ViewportSize_.Y
+    
+    local HorizontalLine = Drawing.new("Line")
+    local VerticalLine = Drawing.new("Line")
+    
+    _G.SendNotifications = true   -- If set to true then the script would notify you frequently on any changes applied and when loaded / errored. (If a game can detect this, it is recommended to set it to false)
+    _G.DefaultSettings = false   -- If set to true then the script would create a crosshair with the default settings regardless of any changes.
+    _G.ToMouse = true   -- If set to true then the crosshair will be positioned to your mouse cursor's position. If set to false it will be positioned to the center of your screen.
+    
+    _G.CrosshairVisible = true   -- If set to true then the crosshair would be visible and vice versa.
+    _G.CrosshairSize = 20   -- The size of the crosshair.
+    _G.CrosshairThickness = 1   -- The thickness of the crosshair.
+    _G.CrosshairColor = Color3.fromRGB(0, 255, 0)   -- The color of the crosshair
+    _G.CrosshairTransparency = 1   -- The transparency of the crosshair.
+    
+    _G.DisableKey = Enum.KeyCode.Q   -- The key that enables / disables the crosshair.
+    
+    RunService.RenderStepped:Connect(function()
+        local Real_Size = _G.CrosshairSize / 2
+    
+        HorizontalLine.Color = _G.CrosshairColor
+        HorizontalLine.Thickness = _G.CrosshairThickness
+        HorizontalLine.Visible = _G.CrosshairVisible
+        HorizontalLine.Transparency = _G.CrosshairTransparency
+        
+        VerticalLine.Color = _G.CrosshairColor
+        VerticalLine.Thickness = _G.CrosshairThickness
+        VerticalLine.Visible = _G.CrosshairVisible
+        VerticalLine.Transparency = _G.CrosshairTransparency
+        
+        if _G.ToMouse == true then
+            HorizontalLine.From = Vector2.new(UserInputService:GetMouseLocation().X - Real_Size, UserInputService:GetMouseLocation().Y)
+            HorizontalLine.To = Vector2.new(UserInputService:GetMouseLocation().X + Real_Size, UserInputService:GetMouseLocation().Y)
+            
+            VerticalLine.From = Vector2.new(UserInputService:GetMouseLocation().X, UserInputService:GetMouseLocation().Y - Real_Size)
+            VerticalLine.To = Vector2.new(UserInputService:GetMouseLocation().X, UserInputService:GetMouseLocation().Y + Real_Size)
+        elseif _G.ToMouse == false then
+            HorizontalLine.From = Vector2.new(Axis_X - Real_Size, Axis_Y)
+            HorizontalLine.To = Vector2.new(Axis_X + Real_Size, Axis_Y)
+        
+            VerticalLine.From = Vector2.new(Axis_X, Axis_Y - Real_Size)
+            VerticalLine.To = Vector2.new(Axis_X, Axis_Y + Real_Size)
+        end
+    end)
+    
+    if _G.DefaultSettings == true then
+        _G.CrosshairVisible = true
+        _G.CrosshairSize = 25
+        _G.CrosshairThickness = 1
+        _G.CrosshairColor = Color3.fromRGB(40, 90, 255)
+        _G.CrosshairTransparency = 0.15
+        _G.DisableKey = Enum.KeyCode.Q
+    end
+    
+    UserInputService.TextBoxFocused:Connect(function()
+        Typing = true
+    end)
+    
+    UserInputService.TextBoxFocusReleased:Connect(function()
+        Typing = false
+    end)
+    
+    UserInputService.InputBegan:Connect(function(Input)
+        if Input.KeyCode == _G.DisableKey and Typing == false then
+            _G.CrosshairVisible = not _G.CrosshairVisible
+            
+            if _G.SendNotifications == true then
+                game:GetService("StarterGui"):SetCore("SendNotification",{
+                    Title = "Operation Nexus";
+                    Text = "The crosshair's visibility is now set to "..tostring(_G.CrosshairVisible)..".";
+                    Duration = 5;
+                })
+            end
+        end
+    end)
+end)
+
+CrosshairSettings:NewToggle("Toggle Notifications", "Toggles Notifications", function(state)
+    _G.SendNotifications = state
+end)
+
+CrosshairSettings:NewToggle("Enable Crosshair", "Or just press Q", function(state)
+    _G.CrosshairVisible = state
+end)
+
+CrosshairSettings:NewSlider("Crosshair Size", "Changes the size of the Crosshair", 200, 0, function(s)
+    _G.CrosshairSize = s
+end)
+
+CrosshairSettings:NewToggle("Lock Center Screen", "Locks the Crosshair to the center of the screen", function(state)
+    _G.ToMouse = state
+end)
+
+CrosshairSettings:NewSlider("Crosshair Thickness", "Make the Crosshair Thicker", function(s)
+    _G.CrosshairThickness = s
+end)
+
+CrosshairSettings:NewColorPicker("Crosshair Color", "Changes the color of the crosshair", Color3.fromRGB(0, 0, 0), function(color)
+    _G.CrosshairColor = color
+end)
 
