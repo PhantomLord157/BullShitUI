@@ -46,7 +46,7 @@ ESPSection:NewButton("ESP", "Shows enemy player chams, health, name, and distanc
                         nameLabel = Instance.new("BillboardGui")
                         nameLabel.Name = "PlayerLabel"
                         nameLabel.AlwaysOnTop = true
-                        nameLabel.ExtentsOffset = Vector3.new(0, 1, 0)
+                        nameLabel.ExtentsOffset = Vector3.new(0, 3, 0)
                         nameLabel.Size = UDim2.new(0, 100, 0, 30)
                         
                         local nameLabelText = Instance.new("TextLabel")
