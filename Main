@@ -1,5 +1,5 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/PhantomLord157/ProjectBullShit/main/UILibrary.lua"))()
-local Window = Library.CreateLib("卐 Operation Nexus V 1.4.2  卍", "DarkTheme")
+local Window = Library.CreateLib("卐 Operation Nexus V 1.5  卍", "DarkTheme")
 
 -- Main --
 local ESP = Window:NewTab("ESP")
@@ -109,7 +109,12 @@ ESPSection:NewButton("ESP", "Shows enemy player chams, health, name, and distanc
     RunService.Heartbeat:Connect(function()
         updatePlayerLabels()
     end)
-    
+end)
+
+ESPSection:NewButton("FullBright", "Night time is supposed to be dark?", function()
+    local Lighting = game:GetService("Lighting")
+    Lighting.Ambient = Color3.new(1, 1, 1)
+    Lighting.OutdoorAmbient = Color3.new(1, 1, 1)
 end)
 
 ESPSection:NewButton("Add Tracers", "adds tracers", function()
@@ -177,119 +182,110 @@ ESPSection:NewToggle("Toggle Tracers", "lines going to the other players", funct
     _G.Tracers = state
 end)
 
-ESPSection:NewButton("FullBright", "Night time is supposed to be dark?", function()
-    local Lighting = game:GetService("Lighting")
-    Lighting.Ambient = Color3.new(1, 1, 1)
-    Lighting.OutdoorAmbient = Color3.new(1, 1, 1)
-end)
-
 local Aimbot = Window:NewTab("Aimbot")
-local AimbotSection = Aimbot:NewSection("Aimbot")
 local AimbotTogglesSection = Aimbot:NewSection("Aimbot Toggles")
 local FOVTogglesSection = Aimbot:NewSection("FOV Toggles")
 
-AimbotSection:NewButton("Add Aimbot", "Click This For Aimbot To Work", function()
-    local Players = game:GetService("Players")
-    local LocalPlayer = Players.LocalPlayer
-    local Camera = workspace.CurrentCamera
-    local RunService = game:GetService("RunService")
-    local UserInputService = game:GetService("UserInputService")
-    local TweenService = game:GetService("TweenService")
-    local Holding = false
-    
-    -- Aimbot settings
-    AimbotEnabled = true
-    TeamCheck = true
-    local AimPart = "Head"
-    local Sensitivity = 0
-    
-    -- FOV settings
-    local CircleSides = 12
-    CircleColor = Color3.fromRGB(255, 255, 255)
-    local CircleTransparency = 0.7
-    CircleRadius = 80
-    local CircleFilled = false
-    local CircleVisible = true
-    local CircleThickness = 3
-    
-    local FOVCircle = Drawing.new("Circle")
-    FOVCircle.Filled = CircleFilled
-    FOVCircle.Visible = CircleVisible
-    FOVCircle.Transparency = CircleTransparency
-    FOVCircle.Thickness = CircleThickness
-    
-    function IsInFrontOfCamera(part)
-        local cameraCFrame = Camera.CFrame
-        local partPosition = part.Position
-        local cameraLookVector = cameraCFrame.LookVector
-        local directionToPart = (partPosition - cameraCFrame.Position).Unit
-        return cameraLookVector:Dot(directionToPart) > 0
-    end
-    
-    function GetClosestPlayer()
-        local MaximumDistance = CircleRadius
-        local Target = nil
-        local ClosestDistance = math.huge
-    
-        local centerScreen = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
-    
-        for _, v in pairs(Players:GetPlayers()) do
-            if v ~= LocalPlayer and (not TeamCheck or v.Team ~= LocalPlayer.Team) then
-                local character = v.Character
-                if character then
-                    local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
-                    if humanoidRootPart then
-                        local screenPoint = Camera:WorldToScreenPoint(humanoidRootPart.Position)
-                        local vectorDistance = (centerScreen - Vector2.new(screenPoint.X, screenPoint.Y)).Magnitude
-    
-                        if vectorDistance < MaximumDistance and vectorDistance < ClosestDistance and IsInFrontOfCamera(humanoidRootPart) then
-                            ClosestDistance = vectorDistance
-                            Target = v
-                        end
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local Camera = workspace.CurrentCamera
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+local TweenService = game:GetService("TweenService")
+local Holding = false
+
+-- Aimbot settings
+AimbotEnabled = false
+TeamCheck = true
+local AimPart = "Head"
+local Sensitivity = 0
+
+-- FOV settings
+local CircleSides = 12
+CircleColor = Color3.fromRGB(255, 255, 255)
+local CircleTransparency = 0.7
+CircleRadius = 80
+local CircleFilled = false
+CircleVisible = false
+local CircleThickness = 3
+
+local FOVCircle = Drawing.new("Circle")
+FOVCircle.Filled = CircleFilled
+FOVCircle.Visible = CircleVisible
+FOVCircle.Transparency = CircleTransparency
+FOVCircle.Thickness = CircleThickness
+
+function IsInFrontOfCamera(part)
+    local cameraCFrame = Camera.CFrame
+    local partPosition = part.Position
+    local cameraLookVector = cameraCFrame.LookVector
+    local directionToPart = (partPosition - cameraCFrame.Position).Unit
+    return cameraLookVector:Dot(directionToPart) > 0
+end
+
+function GetClosestPlayer()
+    local MaximumDistance = CircleRadius
+    local Target = nil
+    local ClosestDistance = math.huge
+
+    local centerScreen = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
+
+    for _, v in pairs(Players:GetPlayers()) do
+        if v ~= LocalPlayer and (not TeamCheck or v.Team ~= LocalPlayer.Team) then
+            local character = v.Character
+            if character then
+                local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+                if humanoidRootPart then
+                    local screenPoint = Camera:WorldToScreenPoint(humanoidRootPart.Position)
+                    local vectorDistance = (centerScreen - Vector2.new(screenPoint.X, screenPoint.Y)).Magnitude
+
+                    if vectorDistance < MaximumDistance and vectorDistance < ClosestDistance and IsInFrontOfCamera(humanoidRootPart) then
+                        ClosestDistance = vectorDistance
+                        Target = v
                     end
                 end
             end
         end
-    
-        return Target
     end
-    
-    UserInputService.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton2 then
-            Holding = true
-        end
-    end)
-    
-    UserInputService.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton2 then
-            Holding = false
-        end
-    end)
-    
-    RunService.RenderStepped:Connect(function()
-        FOVCircle.Position = Vector2.new(UserInputService:GetMouseLocation().X, UserInputService:GetMouseLocation().Y)
-        FOVCircle.Radius = CircleRadius
-        FOVCircle.Color = CircleColor
-        FOVCircle.Visible = CircleVisible
-        FOVCircle.Transparency = CircleTransparency
-        FOVCircle.NumSides = CircleSides
-        FOVCircle.Thickness = CircleThickness
-    
-        if Holding and AimbotEnabled then
-            local targetPlayer = GetClosestPlayer()
-            if targetPlayer then
-                local targetPart = targetPlayer.Character and targetPlayer.Character[AimPart]
-                if targetPart then
-                    local targetPosition = targetPart.Position
-                    local lookVector = (targetPosition - Camera.CFrame.Position).Unit
-                    local targetCFrame = CFrame.new(Camera.CFrame.Position, Camera.CFrame.Position + lookVector)
-                    TweenService:Create(Camera, TweenInfo.new(Sensitivity, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {CFrame = targetCFrame}):Play()
-                end
+
+    return Target
+end
+
+UserInputService.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton2 then
+        Holding = true
+    end
+end)
+
+UserInputService.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton2 then
+        Holding = false
+    end
+end)
+
+RunService.RenderStepped:Connect(function()
+    FOVCircle.Position = Vector2.new(UserInputService:GetMouseLocation().X, UserInputService:GetMouseLocation().Y)
+    FOVCircle.Radius = CircleRadius
+    FOVCircle.Color = CircleColor
+    FOVCircle.Visible = CircleVisible
+    FOVCircle.Transparency = CircleTransparency
+    FOVCircle.NumSides = CircleSides
+    FOVCircle.Thickness = CircleThickness
+
+    if Holding and AimbotEnabled then
+        local targetPlayer = GetClosestPlayer()
+        if targetPlayer then
+            local targetPart = targetPlayer.Character and targetPlayer.Character[AimPart]
+            if targetPart then
+                local targetPosition = targetPart.Position
+                local lookVector = (targetPosition - Camera.CFrame.Position).Unit
+                local targetCFrame = CFrame.new(Camera.CFrame.Position, Camera.CFrame.Position + lookVector)
+                TweenService:Create(Camera, TweenInfo.new(Sensitivity, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {CFrame = targetCFrame}):Play()
             end
         end
-    end)
-    
+    end
 end)
+
 
 AimbotTogglesSection:NewToggle("Enable Aimbot", "Enables Aimbot", function(state)
     AimbotEnabled = state
@@ -297,6 +293,10 @@ end)
 
 AimbotTogglesSection:NewToggle("Enable Team Check", "Enables Team Check", function(state)
     TeamCheck = state
+end)
+
+FOVTogglesSection:NewToggle("FOV Visible", "Changes the visibility of the FOV.", function (state)
+    CircleVisible = state
 end)
 
 FOVTogglesSection:NewColorPicker("FOV Color", "Changes The FOV Color", Color3.fromRGB(0, 0, 0), function(color)
@@ -310,111 +310,109 @@ end)
 local CrossHair = Window:NewTab("CrossHair")
 local CrosshairSettings = CrossHair:NewSection("Crosshair Settings")
 
-CrosshairSettings:NewButton("Add Crosshair", "Its A CrossHair", function ()
-    local function API_Check()
-        if Drawing == nil then
-            return "No"
-        else
-            return "Yes"
+local function API_Check()
+    if Drawing == nil then
+        return "No"
+    else
+        return "Yes"
+    end
+end
+
+local Find_Required = API_Check()
+
+if Find_Required == "No" then
+    game:GetService("StarterGui"):SetCore("SendNotification",{
+        Title = "Exunys Developer";
+        Text = "Crosshair script could not be loaded because your exploit is unsupported.";
+        Duration = math.huge;
+        Button1 = "OK"
+    })
+
+    return
+end
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+local Camera = workspace.CurrentCamera
+
+local Typing = false
+
+local ViewportSize_ = Camera.ViewportSize / 2
+local Axis_X, Axis_Y = ViewportSize_.X, ViewportSize_.Y
+
+local HorizontalLine = Drawing.new("Line")
+local VerticalLine = Drawing.new("Line")
+
+local SendNotifications = true   -- If set to true then the script would notify you frequently on any changes applied and when loaded / errored. (If a game can detect this, it is recommended to set it to false)
+local DefaultSettings = false   -- If set to true then the script would create a crosshair with the default settings regardless of any changes.
+local ToMouse = false   -- If set to true then the crosshair will be positioned to your mouse cursor's position. If set to false it will be positioned to the center of your screen.
+
+_G.CrosshairVisible = false   -- If set to true then the crosshair would be visible and vice versa.
+_G.CrosshairSize = 20   -- The size of the crosshair.
+local CrosshairThickness = 2   -- The thickness of the crosshair.
+_G.CrosshairColor = Color3.fromRGB(0, 255, 0)   -- The color of the crosshair
+local CrosshairTransparency = 1   -- The transparency of the crosshair.
+
+local DisableKey = Enum.KeyCode.Q   -- The key that enables / disables the crosshair.
+
+RunService.RenderStepped:Connect(function()
+    local Real_Size = _G.CrosshairSize / 2
+
+    HorizontalLine.Color = _G.CrosshairColor
+    HorizontalLine.Thickness = CrosshairThickness
+    HorizontalLine.Visible = _G.CrosshairVisible
+    HorizontalLine.Transparency = CrosshairTransparency
+    
+    VerticalLine.Color = _G.CrosshairColor
+    VerticalLine.Thickness = CrosshairThickness
+    VerticalLine.Visible = _G.CrosshairVisible
+    VerticalLine.Transparency = CrosshairTransparency
+    
+    if ToMouse == true then
+        HorizontalLine.From = Vector2.new(UserInputService:GetMouseLocation().X - Real_Size, UserInputService:GetMouseLocation().Y)
+        HorizontalLine.To = Vector2.new(UserInputService:GetMouseLocation().X + Real_Size, UserInputService:GetMouseLocation().Y)
+        
+        VerticalLine.From = Vector2.new(UserInputService:GetMouseLocation().X, UserInputService:GetMouseLocation().Y - Real_Size)
+        VerticalLine.To = Vector2.new(UserInputService:GetMouseLocation().X, UserInputService:GetMouseLocation().Y + Real_Size)
+    elseif ToMouse == false then
+        HorizontalLine.From = Vector2.new(Axis_X - Real_Size, Axis_Y)
+        HorizontalLine.To = Vector2.new(Axis_X + Real_Size, Axis_Y)
+    
+        VerticalLine.From = Vector2.new(Axis_X, Axis_Y - Real_Size)
+        VerticalLine.To = Vector2.new(Axis_X, Axis_Y + Real_Size)
+    end
+end)
+
+if DefaultSettings == true then
+    _G.CrosshairVisible = true
+    _G.CrosshairSize = 25
+    CrosshairThickness = 1
+    _G.CrosshairColor = Color3.fromRGB(40, 90, 255)
+    CrosshairTransparency = 0.15
+    DisableKey = Enum.KeyCode.Q
+end
+
+UserInputService.TextBoxFocused:Connect(function()
+    Typing = true
+end)
+
+UserInputService.TextBoxFocusReleased:Connect(function()
+    Typing = false
+end)
+
+UserInputService.InputBegan:Connect(function(Input)
+    if Input.KeyCode == DisableKey and Typing == false then
+        _G.CrosshairVisible = not _G.CrosshairVisible
+        
+        if SendNotifications == true then
+            game:GetService("StarterGui"):SetCore("SendNotification",{
+                Title = "Operation Nexus";
+                Text = "The crosshair's visibility is now set to "..tostring(_G.CrosshairVisible)..".";
+                Duration = 5;
+            })
         end
     end
-    
-    local Find_Required = API_Check()
-    
-    if Find_Required == "No" then
-        game:GetService("StarterGui"):SetCore("SendNotification",{
-            Title = "Exunys Developer";
-            Text = "Crosshair script could not be loaded because your exploit is unsupported.";
-            Duration = math.huge;
-            Button1 = "OK"
-        })
-    
-        return
-    end
-    
-    local Players = game:GetService("Players")
-    local RunService = game:GetService("RunService")
-    local UserInputService = game:GetService("UserInputService")
-    local Camera = workspace.CurrentCamera
-    
-    local Typing = false
-    
-    local ViewportSize_ = Camera.ViewportSize / 2
-    local Axis_X, Axis_Y = ViewportSize_.X, ViewportSize_.Y
-    
-    local HorizontalLine = Drawing.new("Line")
-    local VerticalLine = Drawing.new("Line")
-    
-    local SendNotifications = true   -- If set to true then the script would notify you frequently on any changes applied and when loaded / errored. (If a game can detect this, it is recommended to set it to false)
-    local DefaultSettings = false   -- If set to true then the script would create a crosshair with the default settings regardless of any changes.
-    local ToMouse = false   -- If set to true then the crosshair will be positioned to your mouse cursor's position. If set to false it will be positioned to the center of your screen.
-    
-    _G.CrosshairVisible = true   -- If set to true then the crosshair would be visible and vice versa.
-    _G.CrosshairSize = 20   -- The size of the crosshair.
-    local CrosshairThickness = 2   -- The thickness of the crosshair.
-    _G.CrosshairColor = Color3.fromRGB(0, 255, 0)   -- The color of the crosshair
-    local CrosshairTransparency = 1   -- The transparency of the crosshair.
-    
-    local DisableKey = Enum.KeyCode.Q   -- The key that enables / disables the crosshair.
-    
-    RunService.RenderStepped:Connect(function()
-        local Real_Size = _G.CrosshairSize / 2
-    
-        HorizontalLine.Color = _G.CrosshairColor
-        HorizontalLine.Thickness = CrosshairThickness
-        HorizontalLine.Visible = _G.CrosshairVisible
-        HorizontalLine.Transparency = CrosshairTransparency
-        
-        VerticalLine.Color = _G.CrosshairColor
-        VerticalLine.Thickness = CrosshairThickness
-        VerticalLine.Visible = _G.CrosshairVisible
-        VerticalLine.Transparency = CrosshairTransparency
-        
-        if ToMouse == true then
-            HorizontalLine.From = Vector2.new(UserInputService:GetMouseLocation().X - Real_Size, UserInputService:GetMouseLocation().Y)
-            HorizontalLine.To = Vector2.new(UserInputService:GetMouseLocation().X + Real_Size, UserInputService:GetMouseLocation().Y)
-            
-            VerticalLine.From = Vector2.new(UserInputService:GetMouseLocation().X, UserInputService:GetMouseLocation().Y - Real_Size)
-            VerticalLine.To = Vector2.new(UserInputService:GetMouseLocation().X, UserInputService:GetMouseLocation().Y + Real_Size)
-        elseif ToMouse == false then
-            HorizontalLine.From = Vector2.new(Axis_X - Real_Size, Axis_Y)
-            HorizontalLine.To = Vector2.new(Axis_X + Real_Size, Axis_Y)
-        
-            VerticalLine.From = Vector2.new(Axis_X, Axis_Y - Real_Size)
-            VerticalLine.To = Vector2.new(Axis_X, Axis_Y + Real_Size)
-        end
-    end)
-    
-    if DefaultSettings == true then
-        _G.CrosshairVisible = true
-        _G.CrosshairSize = 25
-        CrosshairThickness = 1
-        _G.CrosshairColor = Color3.fromRGB(40, 90, 255)
-        CrosshairTransparency = 0.15
-        DisableKey = Enum.KeyCode.Q
-    end
-    
-    UserInputService.TextBoxFocused:Connect(function()
-        Typing = true
-    end)
-    
-    UserInputService.TextBoxFocusReleased:Connect(function()
-        Typing = false
-    end)
-    
-    UserInputService.InputBegan:Connect(function(Input)
-        if Input.KeyCode == DisableKey and Typing == false then
-            _G.CrosshairVisible = not _G.CrosshairVisible
-            
-            if SendNotifications == true then
-                game:GetService("StarterGui"):SetCore("SendNotification",{
-                    Title = "Operation Nexus";
-                    Text = "The crosshair's visibility is now set to "..tostring(_G.CrosshairVisible)..".";
-                    Duration = 5;
-                })
-            end
-        end
-    end)
 end)
 
 CrosshairSettings:NewToggle("Enable Crosshair", "Or just press Q", function(state)
