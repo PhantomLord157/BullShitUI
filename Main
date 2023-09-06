@@ -219,7 +219,7 @@ CircleVisible = false
 local CircleThickness = 3
 
 -- Wall check toggle
-WallCheckEnabled = true
+WallCheckEnabled = false
 
 local FOVCircle = Drawing.new("Circle")
 FOVCircle.Filled = CircleFilled
@@ -314,10 +314,6 @@ end)
 
 AimbotTogglesSection:NewToggle("Enable Team Check", "Enables Team Check", function(state)
     TeamCheck = state
-end)
-
-AimbotTogglesSection:NewToggle("Enable WallCheck", "This will check if the enemy player is behind a wall or not.", function(state)
-    WallCheckEnabled = state
 end)
 
 FOVTogglesSection:NewToggle("FOV Visible", "Changes the visibility of the FOV.", function (state)
@@ -476,4 +472,12 @@ end)
 
 OthersSection:NewButton("Simply Spy", "In Case You Need It.", function()
         loadstring(game:HttpGet(("https://raw.githubusercontent.com/PhantomLord157/ProjectBullShit/main/Remote%20Spy"),true))()
+end)
+
+
+local Experimental = Window:NewTab("Experimental Features")
+local aimbotstuff = Experimental:NewSection("Aimbot Stuff")
+
+aimbotstuff:NewToggle("Enable WallCheck", "This will check if the enemy player is behind a wall or not.", function(state)
+    WallCheckEnabled = state
 end)
