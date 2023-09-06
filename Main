@@ -1,5 +1,5 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/PhantomLord157/ProjectBullShit/main/UILibrary.lua"))()
-local Window = Library.CreateLib("卐 Operation Nexus V 1.5  卍", "DarkTheme")
+local Window = Library.CreateLib("卐 Operation Nexus V 1.5.1  卍", "DarkTheme")
 
 -- Main --
 local ESP = Window:NewTab("ESP")
@@ -9,7 +9,6 @@ local ESPSection = ESP:NewSection("ESP")
 ESPSection:NewButton("ESP", "Shows enemy player chams, health, name, and distance from you.", function()
     local player = game.Players.LocalPlayer
     local RunService = game:GetService("RunService")
-    
     local highlight = Instance.new("Highlight")
     highlight.Name = "Highlight"
     
@@ -209,6 +208,9 @@ local CircleFilled = false
 CircleVisible = false
 local CircleThickness = 3
 
+-- Wall check toggle
+WallCheckEnabled = true
+
 local FOVCircle = Drawing.new("Circle")
 FOVCircle.Filled = CircleFilled
 FOVCircle.Visible = CircleVisible
@@ -236,6 +238,14 @@ function GetClosestPlayer()
             if character then
                 local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
                 if humanoidRootPart then
+                    if WallCheckEnabled then
+                        local ray = Ray.new(Camera.CFrame.Position, humanoidRootPart.Position - Camera.CFrame.Position)
+                        local hitPart, hitPosition = workspace:FindPartOnRay(ray)
+                        if hitPart and hitPart.Parent ~= character then
+                            break
+                        end
+                    end
+
                     local screenPoint = Camera:WorldToScreenPoint(humanoidRootPart.Position)
                     local vectorDistance = (centerScreen - Vector2.new(screenPoint.X, screenPoint.Y)).Magnitude
 
@@ -287,12 +297,17 @@ RunService.RenderStepped:Connect(function()
 end)
 
 
+
 AimbotTogglesSection:NewToggle("Enable Aimbot", "Enables Aimbot", function(state)
     AimbotEnabled = state
 end)
 
 AimbotTogglesSection:NewToggle("Enable Team Check", "Enables Team Check", function(state)
     TeamCheck = state
+end)
+
+AimbotTogglesSection:NewToggle("Enable WallCheck", "This will check if the enemy player is behind a wall or not.", function(state)
+    WallCheckEnabled = state
 end)
 
 FOVTogglesSection:NewToggle("FOV Visible", "Changes the visibility of the FOV.", function (state)
