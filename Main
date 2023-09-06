@@ -1,5 +1,5 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/PhantomLord157/ProjectBullShit/main/UILibrary.lua"))()
-local Window = Library.CreateLib("卐 Operation Nexus V 1.5.1  卍", "DarkTheme")
+local Window = Library.CreateLib("卐 Operation Nexus V 1.5.2  卍", "DarkTheme")
 
 -- Main --
 local ESP = Window:NewTab("ESP")
@@ -7,107 +7,117 @@ local ESPSection = ESP:NewSection("ESP")
 
 
 ESPSection:NewButton("ESP", "Shows enemy player chams, health, name, and distance from you.", function()
-    local player = game.Players.LocalPlayer
-    local RunService = game:GetService("RunService")
-    local highlight = Instance.new("Highlight")
-    highlight.Name = "Highlight"
-    
-    local highlightColor = Color3.new(1, 0, 0) -- Set the highlight color
-    
-    local function createHighlight(character, highlightColor)
-        if character and not character:FindFirstChild("HumanoidRootPart"):FindFirstChild("Highlight") then
-            local highlightClone = highlight:Clone()
-            highlightClone.Adornee = character
-            highlightClone.Parent = character:FindFirstChild("HumanoidRootPart")
-            highlightClone.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-            highlightClone.Color3 = highlightColor
-            highlightClone.Name = "Highlight"
-        end
+
+_G.TeamCheck = true
+local player = game.Players.LocalPlayer
+local RunService = game:GetService("RunService")
+local highlight = Instance.new("Highlight")
+highlight.Name = "Highlight"
+
+local redHighlightColor = Color3.new(1, 0, 0)
+local greenHighlightColor = Color3.new(0, 1, 0)
+
+local function createHighlight(character, highlightColor)
+    if character and not character:FindFirstChild("HumanoidRootPart"):FindFirstChild("Highlight") then
+        local highlightClone = highlight:Clone()
+        highlightClone.Adornee = character
+        highlightClone.Parent = character:FindFirstChild("HumanoidRootPart")
+        highlightClone.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+        highlightClone.Name = "Highlight"
     end
-    
-    local function updatePlayerLabels()
-        local playerPosition = player.Character and player.Character.HumanoidRootPart.Position
-        if not playerPosition then
-            return
-        end
-        
-        for _, otherPlayer in pairs(game.Players:GetPlayers()) do
-            if otherPlayer ~= player then
-                local character = otherPlayer.Character
-                local humanoid = character and character:FindFirstChild("Humanoid")
-                local head = character and character:FindFirstChild("Head")        
-                local nameLabel = head and head:FindFirstChild("PlayerLabel")
-                
-                if humanoid and head and humanoid.Health > 0 then
-                    local distance = (head.Position - player.Character.Head.Position).Magnitude
-                    
-                    if not nameLabel then
-                        nameLabel = Instance.new("BillboardGui")
-                        nameLabel.Name = "PlayerLabel"
-                        nameLabel.AlwaysOnTop = true
-                        nameLabel.ExtentsOffset = Vector3.new(0, 3, 0)
-                        nameLabel.Size = UDim2.new(0, 100, 0, 30)
-                        
-                        local nameLabelText = Instance.new("TextLabel")
-                        nameLabelText.Name = "NameLabel"
-                        nameLabelText.BackgroundTransparency = 1
-                        nameLabelText.Position = UDim2.new(0, 0, 0, 0)
-                        nameLabelText.Size = UDim2.new(1, 0, 0.5, 0)
-                        nameLabelText.Text = ""
-                        nameLabelText.TextColor3 = Color3.new(1, 1, 1)
-                        nameLabelText.Font = Enum.Font.SourceSansBold
-                        nameLabelText.TextSize = 18
-                        nameLabelText.Parent = nameLabel
-        
-                        local healthLabel = Instance.new("TextLabel")
-                        healthLabel.Name = "HealthLabel"
-                        healthLabel.BackgroundTransparency = 1
-                        healthLabel.Position = UDim2.new(0, 0, 0.5, 0)
-                        healthLabel.Size = UDim2.new(1, 0, 0.5, 0)
-                        healthLabel.Text = ""
-                        healthLabel.TextColor3 = Color3.new(1, 1, 1)
-                        healthLabel.Font = Enum.Font.SourceSansBold
-                        healthLabel.TextSize = 18
-                        healthLabel.Parent = nameLabel
-        
-                        nameLabel.Parent = head
-                    end
-                    
-                    nameLabel.NameLabel.Text = otherPlayer.Name
-                    nameLabel.HealthLabel.Text = string.format("Distance: %.2f | Health: %d", distance, humanoid.Health)
-                    nameLabel.Adornee = head
-                    
-                    createHighlight(character, highlightColor)
-                elseif nameLabel then
-                    nameLabel:Destroy()
+end
+
+local function updatePlayerLabels()
+    local playerPosition = player.Character and player.Character.HumanoidRootPart.Position
+    if not playerPosition then
+        return
+    end
+
+    for _, otherPlayer in pairs(game.Players:GetPlayers()) do
+        if otherPlayer ~= player then
+            local character = otherPlayer.Character
+            local humanoid = character and character:FindFirstChild("Humanoid")
+            local head = character and character:FindFirstChild("Head")
+            local nameLabel = head and head:FindFirstChild("PlayerLabel")
+
+            if humanoid and head and humanoid.Health > 0 then
+                local distance = (head.Position - player.Character.Head.Position).Magnitude
+
+                if not nameLabel then
+                    nameLabel = Instance.new("BillboardGui")
+                    nameLabel.Name = "PlayerLabel"
+                    nameLabel.AlwaysOnTop = true
+                    nameLabel.ExtentsOffset = Vector3.new(0, 3, 0)
+                    nameLabel.Size = UDim2.new(0, 100, 0, 30)
+
+                    local nameLabelText = Instance.new("TextLabel")
+                    nameLabelText.Name = "NameLabel"
+                    nameLabelText.BackgroundTransparency = 1
+                    nameLabelText.Position = UDim2.new(0, 0, 0, 0)
+                    nameLabelText.Size = UDim2.new(1, 0, 0.5, 0)
+                    nameLabelText.Text = ""
+                    nameLabelText.TextColor3 = Color3.new(1, 1, 1)
+                    nameLabelText.Font = Enum.Font.SourceSansBold
+                    nameLabelText.TextSize = 18
+                    nameLabelText.Parent = nameLabel
+
+                    local healthLabel = Instance.new("TextLabel")
+                    healthLabel.Name = "HealthLabel"
+                    healthLabel.BackgroundTransparency = 1
+                    healthLabel.Position = UDim2.new(0, 0, 0.5, 0)
+                    healthLabel.Size = UDim2.new(1, 0, 0.5, 0)
+                    healthLabel.Text = ""
+                    healthLabel.TextColor3 = Color3.new(1, 1, 1)
+                    healthLabel.Font = Enum.Font.SourceSansBold
+                    healthLabel.TextSize = 18
+                    healthLabel.Parent = nameLabel
+
+                    nameLabel.Parent = head
                 end
+
+                nameLabel.NameLabel.Text = otherPlayer.Name
+                nameLabel.HealthLabel.Text = string.format("Distance: %.2f | Health: %d", distance, humanoid.Health)
+                nameLabel.Adornee = head
+
+                -- Check if players are on the same team
+                if _G.TeamCheck and player.TeamColor == otherPlayer.TeamColor then
+                    createHighlight(character, greenHighlightColor)
+                    nameLabel.NameLabel.TextColor3 = Color3.new(0, 1, 0) -- Green text for teammates
+                else
+                    createHighlight(character, redHighlightColor)
+                    nameLabel.NameLabel.TextColor3 = Color3.new(1, 0, 0) -- Red text for non-teammates
+                end
+            elseif nameLabel then
+                nameLabel:Destroy()
             end
         end
     end
-    
-    local function playerAdded(playerAdded)
-        repeat wait() until playerAdded.Character
-        updatePlayerLabels()
-    end
-    
-    game.Players.PlayerAdded:Connect(playerAdded)
-    
-    game.Players.PlayerRemoving:Connect(function(playerRemoved)
-        local character = playerRemoved.Character
-        if character then
-            local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
-            if humanoidRootPart then
-                local highlight = humanoidRootPart:FindFirstChild("Highlight")
-                if highlight then
-                    highlight:Destroy()
-                end
+end
+
+local function playerAdded(playerAdded)
+    repeat wait() until playerAdded.Character
+    updatePlayerLabels()
+end
+
+game.Players.PlayerAdded:Connect(playerAdded)
+
+game.Players.PlayerRemoving:Connect(function(playerRemoved)
+    local character = playerRemoved.Character
+    if character then
+        local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+        if humanoidRootPart then
+            local highlight = humanoidRootPart:FindFirstChild("Highlight")
+            if highlight then
+                highlight:Destroy()
             end
         end
-    end)
-    
-    RunService.Heartbeat:Connect(function()
-        updatePlayerLabels()
-    end)
+    end
+end)
+
+RunService.Heartbeat:Connect(function()
+    updatePlayerLabels()
+end)
+
 end)
 
 ESPSection:NewButton("FullBright", "Night time is supposed to be dark?", function()
